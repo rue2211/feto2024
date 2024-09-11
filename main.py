@@ -3,6 +3,11 @@ Date: June 5th 2024
 Author: Rudrapriya Padmanabhan
 To note: Logic for loading NDI data was provided by Laurent Mennillo 
 
+DATA ACQUISITION:
+- NDI Aurora Field Generator and sensors
+- Windows machine to capture data
+- Stores results of video and sensor data 
+
 """
 import cv2 as cv
 from sksurgerynditracker.nditracker import NDITracker
