@@ -8,7 +8,9 @@ The following project focuses on enhancing the analysis of fetoscopic surgery fo
 Scripts:
 
 The following scripts require scikit-surgery (Calibrate, NDI tracker) for purposes of capturing and calibrating data
+
 Calibration Directory -> Calibtrationg scrips, reprojection and hand eye 
+
 ImageEdit Directory -> Any image manipulation (Cropping, resizing, greyscale conversion)
 
 Remaining scripts are to achieve registration, mosaicking and trajectory analysis
