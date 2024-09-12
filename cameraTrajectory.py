@@ -10,32 +10,32 @@ Uses the hand eye data and the EM data to do matrix multiplication
 import numpy as np
 import pandas as pd
 
-# Load the sensor data from the provided CSV file
+# Load the sensor data
 sensor_data = pd.read_csv('500/EMdata.csv')
 
-# Clean the data by removing rows with NaN values
+# remove NaN
 sensor_data_clean = sensor_data.dropna()
 
-# Hand-eye calibration matrix provided by you
+# Hand-eye calibration matrix 
 hand_eye_matrix = np.array([[ 9.88355635e-01, -5.02167980e-03,  1.52078668e-01,  7.04768353e+01],
                             [-1.33485529e-01,  4.51136106e-01,  8.82415904e-01,  3.95961647e+02],
                             [-7.30393883e-02, -8.92441032e-01,  4.45212591e-01,  1.65310502e+02],
                             [ 0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  1.00000000e+00]])
 
-# Function to create a 4x4 transformation matrix from rotation matrix and translation vector
+# take sensor data and make into 4x4
 def create_transformation_matrix(rotation, translation):
     transformation_matrix = np.eye(4)
     transformation_matrix[:3, :3] = rotation
     transformation_matrix[:3, 3] = translation
     return transformation_matrix
 
-# Function to compute the camera pose from sensor data and hand-eye matrix
+# get camera pose
 def compute_camera_pose(sensor_rotation, sensor_translation, hand_eye_matrix):
     sensor_transformation = create_transformation_matrix(sensor_rotation, sensor_translation)
     camera_pose = np.dot(sensor_transformation, hand_eye_matrix)
     return camera_pose
 
-# List to store the camera poses (rotation and translation separately)
+# store trajectory in a list
 camera_trajectory_3d = []
 
 # Iterate over each row of the clean sensor data
@@ -57,13 +57,13 @@ for _, row in sensor_data_clean.iterrows():
     rotation_part = camera_pose[:3, :3].flatten()
     translation_part = camera_pose[:3, 3]
     
-    # Combine rotation and translation into a single list
+    # combine rotation and translation into a single list
     pose = np.concatenate([rotation_part, translation_part])
     
-    # Append the combined pose to the trajectory list
+    # Append trajcetory list 
     camera_trajectory_3d.append(pose)
 
-# Define column names for rotation and translation parts
+# names of rotation and translation 
 column_names = [
     "R11", "R12", "R13",
     "R21", "R22", "R23",
@@ -71,10 +71,10 @@ column_names = [
     "Tx", "Ty", "Tz"
 ]
 
-# Convert the trajectory list into a DataFrame
+# list -> DF
 trajectory_df = pd.DataFrame(camera_trajectory_3d, columns=column_names)
 
-# Export the DataFrame to a CSV file
+# save as CSV
 trajectory_df.to_csv('500/camera_trajectory_3d.csv', index=False)
 
 print("Camera trajectory (rotation and translation) has been exported to 'camera_trajectory_3d.csv'")
