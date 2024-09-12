@@ -95,7 +95,7 @@ def display_images(images, titles=None):
         plt.axis('off')
         plt.show()
 
-# Example usage:
+
 confidence_maps_dir = 'results/video1308/Mosaic_To_Process/undistorted/conf_maps'
 original_images_dir = 'results/video1308/Mosaic_To_Process/undistorted/images'
 N = 120
