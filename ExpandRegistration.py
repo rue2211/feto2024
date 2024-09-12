@@ -14,13 +14,13 @@ import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 
 def load_images_from_folder(folder, n, file_extension="png"):
-    """Load and sort images from a folder based on filenames."""
+    #load data
     image_files = sorted(glob.glob(os.path.join(folder, f"*.{file_extension}")))
     images = [cv2.imread(file) for file in image_files[:n]]
     return images, image_files[:n]
 
 def bundle_adjustment(points_list, transformations, ref_points):
-    """Optimize transformations to minimize local error (Affine)."""
+    #bundle adjust our frames
     def residuals(params, points_list, ref_points):
         num_transforms = len(params) // 6
         residuals = []
@@ -28,15 +28,15 @@ def bundle_adjustment(points_list, transformations, ref_points):
             M = params[i * 6:(i + 1) * 6].reshape(2, 3)
             transformed_points = np.dot(points_list[i], M[:, :2].T) + M[:, 2]
 
-            # Ensure that only matched points are used
+            # use matched points 
             min_len = min(len(transformed_points), len(ref_points))
             residuals.append(transformed_points[:min_len] - ref_points[:min_len])
         return np.concatenate(residuals).flatten()
 
-    # Flatten the initial transformations into a single parameter array
+    # flatten the initial transformations into a single parameter array
     initial_params = np.hstack([M.flatten() for M in transformations])
     
-    # Perform optimization using least squares
+    # least squares opt
     optimized_params = least_squares(residuals, initial_params, args=(points_list, ref_points))
 
     # Reshape the optimized parameters back into affine transformation matrices
@@ -45,7 +45,7 @@ def bundle_adjustment(points_list, transformations, ref_points):
     return optimized_transformations
 
 def register_images_affine_in_segments(conf_maps, orig_images, keyframe_interval=10, roi=None):
-    """Register images using separate strategies for different segments."""
+   #register via batches
     num_images = len(conf_maps)
     registered_images = []
 
@@ -70,13 +70,13 @@ def register_images_affine_in_segments(conf_maps, orig_images, keyframe_interval
     return registered_images
 
 def apply_roi(image, roi):
-    """Apply a circular ROI to the image."""
+    #focus on the ROI of the image data
     mask = np.zeros(image.shape[:2], dtype=np.uint8)
     cv2.circle(mask, (roi['center_x'], roi['center_y']), roi['diameter'] // 2, 255, thickness=-1)
     return cv2.bitwise_and(image, image, mask=mask)
 
 def register_images_affine(conf_maps, orig_images, global_reference_idx=0, roi=None):
-    """Register the original images using a global reference frame and affine transformations."""
+   #affine transforms method
     key_frame = orig_images[global_reference_idx]
     registered_images = [key_frame]
     gray_conf_ref = cv2.cvtColor(conf_maps[global_reference_idx], cv2.COLOR_BGR2GRAY)
@@ -131,7 +131,7 @@ def register_images_affine(conf_maps, orig_images, global_reference_idx=0, roi=N
     return registered_images
 
 def register_images_affine_with_keyframes(conf_maps, orig_images, global_reference_idx=0, keyframe_interval=15, roi=None):
-    """Register images using key frames and affine transformations with local bundle adjustment."""
+
     registered_images = []
     transformations = []
     points_list = []
@@ -204,7 +204,7 @@ def register_images_affine_with_keyframes(conf_maps, orig_images, global_referen
     return registered_images
 
 def display_images(images, titles=None):
-    """Display each image in the list individually with optional titles."""
+
     for i, img in enumerate(images):
         plt.figure(figsize=(6, 6))
         plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -213,11 +213,12 @@ def display_images(images, titles=None):
         plt.axis('off')
         plt.show()
 
-# Example usage:
+
 confidence_maps_dir = '100/confidence_map'
 original_images_dir = '100/images'
-N = 100 # Number of images to process
+N = 100 
 
+#ROI settings 
 roi_params = {
     'diameter': 389,  # Diameter of the circular ROI
     'center_x': 448 // 2,  # X position of the circle's center
