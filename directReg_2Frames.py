@@ -6,13 +6,13 @@ import cv2
 import numpy as np
 
 def register_images_with_confidence_maps(image1_path, image2_path, conf_map1_path, conf_map2_path, output_path):
-    # Load the images and confidence maps
+    # load data
     image1 = cv2.imread(image1_path)
     image2 = cv2.imread(image2_path)
     conf_map1 = cv2.imread(conf_map1_path, cv2.IMREAD_GRAYSCALE)
     conf_map2 = cv2.imread(conf_map2_path, cv2.IMREAD_GRAYSCALE)
 
-    # Detect ORB features and descriptors based on confidence maps
+    # Detect ORB features from confidence maps 
     orb = cv2.ORB_create(5000)
     keypoints1, descriptors1 = orb.detectAndCompute(conf_map1, None)
     keypoints2, descriptors2 = orb.detectAndCompute(conf_map2, None)
@@ -21,7 +21,7 @@ def register_images_with_confidence_maps(image1_path, image2_path, conf_map1_pat
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
     matches = bf.match(descriptors1, descriptors2)
 
-    # Sort the matches based on distance
+    
     matches = sorted(matches, key=lambda x: x.distance)
 
     # Extract the matched keypoints
@@ -40,7 +40,6 @@ def register_images_with_confidence_maps(image1_path, image2_path, conf_map1_pat
 
     return aligned_image, H
 
-# Example usage:
 image1_path = 'final_resized_image1.jpg'
 image2_path = 'final_resized_image2.jpg'
 conf_map1_path = 'final_resized_conf_map1.png'
