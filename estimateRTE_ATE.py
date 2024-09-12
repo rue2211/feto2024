@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 def load_csv_data(trajectory_csv, solution_csv):
-    """Load the trajectory and decomposed solution CSV files."""
+    
     camera_trajectory_df = pd.read_csv(trajectory_csv)
     decomposed_solution_df = pd.read_csv(solution_csv)
     return camera_trajectory_df, decomposed_solution_df
@@ -31,6 +31,7 @@ def extract_3d_points(df, is_trajectory=True):
 def compute_orientation(x1, x2):
     """
     Compute absolute orientation between two sets of 3D points.
+    Rip from the OpenCV function, as installing SfM was not possible during project duration
     """
     x1_mean = np.mean(x1, axis=0)
     x2_mean = np.mean(x2, axis=0)
@@ -80,10 +81,9 @@ def compute_rot(estimated_trajectory, ground_truth_trajectory, R):
     rotation_errors = []
     
     for i in range(n):
-        # Here we assume the ground truth poses provide rotation matrices
-        R_gt = np.eye(3)  # This should be replaced with the actual ground truth rotation at index i
+
+        R_gt = np.eye(3)  
         
-        # The relative rotation matrix
         R_rel = np.dot(R_gt.T, R)  # R_gt^T * R gives the relative rotation
         angle = rotation_matrix_to_angle(R_rel)
         
