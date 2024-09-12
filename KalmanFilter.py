@@ -13,13 +13,13 @@ import matplotlib.pyplot as plt
 import csv
 
 def load_images_from_folder(folder, n, file_extension="png"):
-    """Load and sort images from a folder based on filenames."""
+    
     image_files = sorted(glob.glob(os.path.join(folder, f"*.{file_extension}")))
     images = [cv2.imread(file) for file in image_files[:n]]
     return images, image_files[:n]
 
 def save_transformations_to_csv(transformations, csv_filename):
-    """Save the list of transformations to a CSV file."""
+
     with open(csv_filename, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         header = ["Image_Index", "M11", "M12", "M13", "M21", "M22", "M23", "M31", "M32", "M33"]
@@ -30,7 +30,7 @@ def save_transformations_to_csv(transformations, csv_filename):
             writer.writerow(row)
 
 def register_images_affine_bundle_adjustment(conf_maps, orig_images, csv_filename="transformations.csv", bundle_size=10):
-    """Register images using affine transformations with periodic bundle adjustment."""
+
     registered_images = []
     transformations = []
     cumulative_transform = np.eye(3)
@@ -66,10 +66,8 @@ def register_images_affine_bundle_adjustment(conf_maps, orig_images, csv_filenam
 
                 keypoints_ref, descriptors_ref = keypoints, descriptors  # Update reference
 
-                # Apply bundle adjustment every bundle_size frames
                 if i % bundle_size == 0:
-                    # Implement bundle adjustment logic here
-                    # This might involve re-aligning all frames within the last bundle to minimize overall drift
+                    #bundle adjust logic - No time to write the results
                     pass
             else:
                 print(f"Affine transformation failed for image {i}. Skipping...")
@@ -80,10 +78,9 @@ def register_images_affine_bundle_adjustment(conf_maps, orig_images, csv_filenam
     
     return registered_images, transformations
 
-# Example usage is the same as before, now with bundle adjustment included
 
 def create_mosaic(registered_images, transformations, canvas_size=(2000, 1500)):
-    """Create a mosaic from the list of registered images using their transformations."""
+#mosaic generations
     mosaic = np.zeros((canvas_size[1], canvas_size[0], 3), dtype=np.uint8)
     
     offset_x, offset_y = canvas_size[0] // 2, canvas_size[1] // 2
@@ -103,7 +100,7 @@ def create_mosaic(registered_images, transformations, canvas_size=(2000, 1500)):
     return mosaic
 
 def display_images(images, titles=None):
-    """Display each image in the list individually with optional titles."""
+
     for i, img in enumerate(images):
         plt.figure(figsize=(6, 6))
         plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -112,19 +109,18 @@ def display_images(images, titles=None):
         plt.axis('off')
         plt.show()
 
-# Example usage:
 confidence_maps_dir = '100/confidence_map'
 original_images_dir = '100/images'
 N = 100
 
-# Load and sort images
+#load data
 conf_maps, conf_files = load_images_from_folder(confidence_maps_dir, N)
 orig_images, orig_files = load_images_from_folder(original_images_dir, N)
 
-# Register images and save transformations to CSV
+# Register images 
 registered_images, transformations = register_images_affine_bundle_adjustment(conf_maps, orig_images, csv_filename="image_transformations.csv", bundle_size=10)
 
-# Create and display the mosaic
+# display/show
 mosaic = create_mosaic(registered_images, transformations)
 plt.figure(figsize=(10, 10))
 plt.imshow(cv2.cvtColor(mosaic, cv2.COLOR_BGR2RGB))
