@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 import csv
 
 def load_images_from_folder(folder, n, file_extension="png"):
-    """Load and sort images from a folder based on filenames."""
+    #Load and sort images from a folder based on filenames.
     image_files = sorted(glob.glob(os.path.join(folder, f"*.{file_extension}")))
     images = [cv2.imread(file) for file in image_files[:n]]
     return images, image_files[:n]
 
 def save_cumulative_transformations_to_csv(cumulative_transformations, csv_filename):
-    """Save cumulative transformations to a CSV file."""
+    #save cumulative transformations to a CSV file
     with open(csv_filename, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         header = [
@@ -32,7 +32,7 @@ def save_cumulative_transformations_to_csv(cumulative_transformations, csv_filen
             writer.writerow(row)
 
 def save_frame_transformations_to_csv(frame_transformations, csv_filename):
-    """Save individual frame transformations to a separate CSV file."""
+    #save individual frame transformations to a separate CSV file.
     with open(csv_filename, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         header = [
@@ -48,7 +48,7 @@ def save_frame_transformations_to_csv(frame_transformations, csv_filename):
             writer.writerow(row)
 
 def register_images_affine(conf_maps, orig_images, cumulative_csv="cumulative_transformations.csv", frame_csv="frame_transformations.csv"):
-    """Register images, store transformations, and save them to separate CSV files."""
+   #function to register via affine transfroms 
     registered_images = []
     cumulative_transformations = []
     frame_transformations = []
@@ -56,9 +56,10 @@ def register_images_affine(conf_maps, orig_images, cumulative_csv="cumulative_tr
     cumulative_transform = np.eye(3)
 
     registered_images.append(orig_images[0])
+    #cumulative transformations load
     cumulative_transformations.append(cumulative_transform)
     frame_transformations.append(np.eye(3))
-
+    #SIFT and brute force matched
     sift = cv2.SIFT_create(nfeatures=5000)
     bf = cv2.BFMatcher(cv2.NORM_L2, crossCheck=False)
 
@@ -94,7 +95,7 @@ def register_images_affine(conf_maps, orig_images, cumulative_csv="cumulative_tr
             print(f"Not enough matches found for image {i}. Skipping...")
             frame_transformations.append(np.eye(3))  # Append identity transformation for skipped image
 
-    # Save the transformations to separate CSV files
+    # Save the transformations to separate CSV files - why 2 transforms 
     save_cumulative_transformations_to_csv(cumulative_transformations, cumulative_csv)
     save_frame_transformations_to_csv(frame_transformations, frame_csv)
     
@@ -130,23 +131,23 @@ def display_images(images, titles=None):
         plt.axis('off')
         plt.show()
 
-# Example usage:
+
 confidence_maps_dir = '100/confidence_map'
 original_images_dir = '100/images'
-N = 101
+N = 101 #size of mosaic for testing 
 
-# Load and sort images
+# load data
 conf_maps, conf_files = load_images_from_folder(confidence_maps_dir, N)
 orig_images, orig_files = load_images_from_folder(original_images_dir, N)
 
-# Apply registration and save results in separate CSV files
+# save data
 registered_images, cumulative_transformations, frame_transformations = register_images_affine(
     conf_maps, orig_images, 
     cumulative_csv="cumulative_transformations.csv", 
     frame_csv="frame_transformations.csv"
 )
 
-# Plot mosaic
+# Plottting
 mosaic = create_mosaic(registered_images, cumulative_transformations)
 plt.figure(figsize=(10, 10))
 plt.imshow(cv2.cvtColor(mosaic, cv2.COLOR_BGR2RGB))
