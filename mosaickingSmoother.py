@@ -110,7 +110,7 @@ def display_images(images, titles=None):
         plt.axis('off')
         plt.show()
 
-# Example usage:
+
 confidence_maps_dir = '100/confidence_map'
 original_images_dir = '100/images'
 N = 101
