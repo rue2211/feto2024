@@ -145,7 +145,6 @@ def calculate_local_ssim(mosaic_image, original_images, transformations):
 
        
 
-# Example usage:
 confidence_maps_dir = '100/confidence_map'
 original_images_dir = '100/images'
 N = 100
