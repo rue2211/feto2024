@@ -16,5 +16,10 @@ ImageEdit Directory -> Any image manipulation (Cropping, resizing, greyscale con
 Remaining scripts are to achieve registration, mosaicking and trajectory analysis
 
 Segmentation scripts:
-To be uploaded 
+Uploaded segment directory
+
+Citations:
+
+Bano, S. et al. (2020). Deep Placental Vessel Segmentation for Fetoscopic Mosaicking. In: Martel, A.L., et al. Medical Image Computing and Computer Assisted Intervention – MICCAI 2020. MICCAI 2020. Lecture Notes in Computer Science(), vol 12263. Springer, Cham. https://doi.org/10.1007/978-3-030-59716-0_73
+
 
