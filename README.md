@@ -16,7 +16,7 @@ ImageEdit Directory -> Any image manipulation (Cropping, resizing, greyscale con
 Remaining scripts are to achieve registration, mosaicking and trajectory analysis
 
 Segmentation scripts:
-Uploaded segment directory
+Uploaded segment directory - Scripts are from the citation below, manipulated for the purposes of only vessel segmentation not for any other classes
 
 Citations:
 
